@@ -48,7 +48,7 @@ const vig = {
         if (value instanceof Array && value.filter(v => !tcp.isNull(v)).length === 0)
             return true;
         if (value instanceof Object && Object.keys(value).length === 0)
-            return false;
+            return true;
         return false;
     },
 }
