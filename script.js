@@ -55,8 +55,8 @@ const vig = {
 
 const decorator = {
     speed: 10,
-    intervalAddress: {},
     typingTag: (appendHTML, targetObject) => {
+        let intervalArray = [];
         const tagHtml = appendHTML instanceof Object && Object.keys(appendHTML).length !== 0
             ? appendHTML.innerHTML : appendHTML;
 
@@ -66,22 +66,28 @@ const decorator = {
         if (vig.isNull(tagHtml) || vig.isNull(appendElement)) return;
 
         function typing(html, target, index) {
-            setTimeout(() => {
+            let timeout = setTimeout(() => {
                 if (index < html.length) {
                     target.innerHTML += Array.from(html)[index];
                     typing(html, target, ++index);
                 }
             }, this.speed);
+            intervalArray.push(timeout);
         }
 
-        typing(tagHtml, appendElement, 0);
+        try {
+            typing(tagHtml, appendElement, 0);
+
+        } catch (e) {
+            for (const address of intervalArray)
+                clearInterval(address);
+
+        }
     },
-    interruptAll: () => {
-        for (const address of this.intervalAddress) clearInterval(address);
-    }
 }
 
 function init() {
     decorator.typingTag('heloooooooooo', 'body');
 }
+
 init();
