@@ -6,11 +6,11 @@ const tcp = {
         url: null,
         body: {},
     },
-    ajax: function () {
+    ajax: () => {
         let xhr = new XMLHttpRequest();
         if (!vig.isNull(tcp.option.method)
             && tcp.option.method.trim().toUpperCase() === 'GET'
-            && !vig.isNull(tcp.option.body)){
+            && !vig.isNull(tcp.option.body)) {
 
             tcp.option.url += '?';
             for (const key in tcp.option.body) {
@@ -28,7 +28,7 @@ const tcp = {
         }
         xhr.send(tcp.option.body);
     },
-    fetch: function () {
+    fetch: () => {
         if (tcp.option.async === false) return tcp.ajax();
 
         return fetch(tcp.option.url, {
@@ -40,7 +40,7 @@ const tcp = {
 }
 
 const vig = {
-    isNull: function (value) {
+    isNull: value => {
         if (value === null || value === undefined)
             return true;
         if (typeof value === 'string' && value.trim() === '')
@@ -51,4 +51,32 @@ const vig = {
             return true;
         return false;
     },
+}
+
+const decorator = {
+    speed: 10,
+    intervalAddress: {},
+    typingTag: (appendHTML, targetObject) => {
+        const tagHtml = appendHTML instanceof Object && Object.keys(appendHTML).length !== 0
+            ? appendHTML.innerHTML : appendHTML;
+
+        const appendElement = targetObject instanceof Object && Object.keys(targetObject).length !== 0
+            ? targetObject : document.querySelector(appendHTML);
+
+        if (vig.isNull(tagHtml) || vig.isNull(appendElement)) return;
+
+        function typing(html, target, index) {
+            setTimeout(() => {
+                if (index < html.length) {
+                    target.innerHTML += Array.from(html)[index];
+                    typing(html, target, index++);
+                }
+            }, this.speed);
+        }
+
+        typing(tagHtml, targetObject, 0);
+    },
+    interruptAll: () => {
+        for (const address of this.intervalAddress) clearInterval(address);
+    }
 }
