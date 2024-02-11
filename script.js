@@ -8,33 +8,33 @@ const tcp = {
     },
     ajax: () => {
         let xhr = new XMLHttpRequest();
-        if (!vig.isNull(tcp.option.method)
-            && tcp.option.method.trim().toUpperCase() === 'GET'
-            && !vig.isNull(tcp.option.body)) {
+        if (!vig.isNull(this.option.method)
+            && this.option.method.trim().toUpperCase() === 'GET'
+            && !vig.isNull(this.option.body)) {
 
-            tcp.option.url += '?';
-            for (const key in tcp.option.body) {
-                tcp.option.url += 'key=' + tcp.option.body[key] + '&';
+            this.option.url += '?';
+            for (const key in this.option.body) {
+                this.option.url += 'key=' + this.option.body[key] + '&';
             }
-            tcp.option.body = {};
+            this.option.body = {};
         }
 
-        xhr.open(tcp.option.method, tcp.option.url, tcp.option.async);
-        if (!vig.isNull(tcp.option.headers)) {
-            for (const headerKey in tcp.option.headers) {
-                let headerValue = tcp.option.headers[headerKey];
+        xhr.open(this.option.method, this.option.url, this.option.async);
+        if (!vig.isNull(this.option.headers)) {
+            for (const headerKey in this.option.headers) {
+                let headerValue = this.option.headers[headerKey];
                 xhr.setRequestHeader(headerKey, headerValue);
             }
         }
-        xhr.send(tcp.option.body);
+        xhr.send(this.option.body);
     },
     fetch: () => {
-        if (tcp.option.async === false) return tcp.ajax();
+        if (this.option.async === false) return this.ajax();
 
-        return fetch(tcp.option.url, {
-            headers: tcp.option.headers,
-            method: tcp.option.method,
-            body: tcp.option.body
+        return fetch(this.option.url, {
+            headers: this.option.headers,
+            method: this.option.method,
+            body: this.option.body
         }).then(value => value.json())
     },
 }
@@ -43,11 +43,11 @@ const vig = {
     isNull: value => {
         if (value === null || value === undefined)
             return true;
-        if (typeof value === 'string' && value.trim() === '')
+        if (typeof value === 'string' && value?.trim() === '')
             return true;
-        if (value instanceof Array && value.filter(v => !tcp.isNull(v)).length === 0)
+        if (value instanceof Array && value?.filter(v => !vig.isNull(v)).length === 0)
             return true;
-        if (value instanceof Object && Object.keys(value).length === 0)
+        if (value instanceof Object && vig.isNull(value?.tagName) && Object.keys(value)?.length === 0)
             return true;
         return false;
     },
@@ -60,8 +60,8 @@ const decorator = {
         const tagHtml = appendHTML instanceof Object && Object.keys(appendHTML).length !== 0
             ? appendHTML.innerHTML : appendHTML;
 
-        const appendElement = targetObject instanceof Object && Object.keys(targetObject).length !== 0
-            ? targetObject : document.querySelector(appendHTML);
+        const appendElement = targetObject instanceof Object && !vig.isNull(value?.tagName)
+            ? targetObject : document.querySelector(targetObject);
 
         if (vig.isNull(tagHtml) || vig.isNull(appendElement)) return;
 
@@ -69,14 +69,19 @@ const decorator = {
             setTimeout(() => {
                 if (index < html.length) {
                     target.innerHTML += Array.from(html)[index];
-                    typing(html, target, index++);
+                    typing(html, target, ++index);
                 }
             }, this.speed);
         }
 
-        typing(tagHtml, targetObject, 0);
+        typing(tagHtml, appendElement, 0);
     },
     interruptAll: () => {
         for (const address of this.intervalAddress) clearInterval(address);
     }
 }
+
+function init() {
+    decorator.typingTag('heloooooooooo', 'body');
+}
+init();
