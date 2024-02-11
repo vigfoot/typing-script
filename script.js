@@ -75,13 +75,25 @@ const decorator = {
             intervalArray.push(timeout);
         }
 
+        function tagSplitter(html) {
+            const htmlComponent = document.createElement('component');
+            htmlComponent.innerHTML = html;
+
+            const textContent = htmlComponent.innerText;
+            const splitArray = htmlComponent.innerHTML.split(textContent);
+
+
+
+        }
+
+
         try {
             typing(tagHtml, appendElement, 0);
 
         } catch (e) {
+            console.log(e);
             for (const address of intervalArray)
                 clearInterval(address);
-
         }
     },
 }
