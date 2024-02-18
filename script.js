@@ -54,7 +54,13 @@ const vig = {
 }
 
 const decorator = {
-    speed: 10,
+    speed: 100,
+    logo: (targetObject, word) => {
+        const appendElement = targetObject instanceof Object && !vig.isNull(value?.tagName)
+            ? targetObject : document.querySelector(targetObject);
+
+
+    },
     typingTag: (appendHTML, targetObject) => {
         let intervalArray = [];
         const tagHtml = appendHTML instanceof Object && Object.keys(appendHTML).length !== 0
@@ -99,6 +105,7 @@ const decorator = {
 }
 
 function init() {
+    decorator.logo('html', 'hi')
     decorator.typingTag('heloooooooooo', 'body');
 }
 
