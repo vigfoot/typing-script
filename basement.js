@@ -54,7 +54,7 @@ const check = {
 }
 
 function init() {
-    typingTag('<h1>hi</h1>helll324osdafsdfasdfasdfasdfsdfas<div>heg</div>ooooooooo', 'body');
+    typingTag('dddddddddddddddddddddd<h1>bbbbbbbbbbbb</h1>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<div>heg</div>ooooooooo', 'body');
 }
 
 init();

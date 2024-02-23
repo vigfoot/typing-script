@@ -24,41 +24,29 @@ function typingTag(appendHTML, targetObject) {
 
     if (isNull(tagHtml) || isNull(appendElement)) return;
 
-    function typing(html, target, index) {
-        const tagSpell = tagSplitter(html);
-        if (!isNull(tagSpell.prefix)) {
-            target.innerHTML += tagSpell.prefix;
-            index += tagSpell.prefix.length;
-
-        }
-
+    function typing(html, target, index, callback) {
+        let tagSpell = tagSplitter(html.substring(index, html.length - 1));
         let timeout = setTimeout(() => {
-            if (index < html.length) {
-                target.innerHTML += Array.from(html)[index];
+            if (index < tagSpell.length) {
+                target.innerHTML += Array.from(tagSpell)[index];
                 typing(html, target, ++index);
+
+                if (!isNull(callback)) callback();
             }
         }, SPEED_MILLI_SECONDS);
         intervalArray.push(timeout);
     }
 
     function tagSplitter(html) {
-        const htmlComponent = document.createElement('component');
-        htmlComponent.innerHTML = html;
-        const indexOfPrefixEnd = htmlComponent.innerHTML.indexOf('>');
+        if (html.indexOf('<') === 0) {
+            return html.substring(0, html.indexOf('>'));
 
-        const prefix = htmlComponent.innerHTML.substring(0, indexOfPrefixEnd);
-        const suffix = null;
+        } else if (html.indexOf('>') === 0) {
+            return html.substring(0, html.length - 1);
+        }
 
-        let result = {"prefix": null, "html": null, "suffix": null};
-
-        if (!isNull(prefix)) result.prefix = prefix;
-        if (!isNull(suffix)) result.suffix = suffix;
-
-        result.html = textContent;
-
-        return result;
+        return html;
     }
-
 
     try {
         typing(tagHtml, appendElement, 0);
